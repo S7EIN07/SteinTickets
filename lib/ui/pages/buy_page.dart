@@ -5,7 +5,6 @@ import 'package:stein_tickets/core/database/dao/history_sale_dao.dart';
 import 'package:stein_tickets/core/database/dao/sale_dao.dart';
 import 'package:stein_tickets/core/models/event_model.dart';
 import 'package:stein_tickets/core/models/sale_model.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../utils/validators.dart';
 
 class BuyPage extends StatefulWidget {
