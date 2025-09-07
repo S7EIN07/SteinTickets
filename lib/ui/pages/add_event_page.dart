@@ -36,10 +36,7 @@ class _AddEventPageState extends State<AddEventPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Adicionar Evento"),
-        iconTheme: const IconThemeData(
-          color: Colors.white, // muda cor
-          size: 28, // muda tamanho
-        ),
+        iconTheme: const IconThemeData(color: Colors.white, size: 32),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

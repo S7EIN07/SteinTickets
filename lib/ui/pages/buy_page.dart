@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:stein_tickets/core/database/dao/event_dao.dart';
 import 'package:stein_tickets/core/database/dao/history_sale_dao.dart';
 import 'package:stein_tickets/core/database/dao/sale_dao.dart';
 import 'package:stein_tickets/core/models/event_model.dart';
 import 'package:stein_tickets/core/models/sale_model.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../utils/validators.dart';
 
 class BuyPage extends StatefulWidget {
@@ -25,66 +27,100 @@ class _BuyPageState extends State<BuyPage> {
   final eventDao = EventDao();
   final historyDao = HistoryDao();
 
+  final maskFormatter = MaskTextInputFormatter(
+    mask: '##/##/####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Comprar - ${widget.event.nome}")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: nomeController,
-                decoration: const InputDecoration(labelText: "Nome"),
-                validator: (value) =>
-                    Validators.validateNotEmpty(value, "nome"),
-              ),
-              TextFormField(
-                controller: dataNascController,
-                decoration: const InputDecoration(
-                  labelText: "Data de Nascimento",
-                ),
-                validator: (value) => Validators.validateAge(value),
-              ),
-              DropdownButtonFormField<int>(
-                value: qtdIngressosComprados,
-                items: List.generate(
-                  widget.event.qtdIngressos,
-                  (i) =>
-                      DropdownMenuItem(value: i + 1, child: Text("${i + 1}")),
-                ),
-                onChanged: (val) =>
-                    setState(() => qtdIngressosComprados = val!),
-                decoration: const InputDecoration(
-                  labelText: "Quantidade de Ingressos",
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final venda = Sale(
-                      nomeCliente: nomeController.text,
-                      dataNascimento: dataNascController.text,
-                      qtdIngressos: qtdIngressosComprados,
-                      eventId: widget.event.id!,
-                    );
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: Text("Comprar - ${widget.event.nome}"),
+        iconTheme: IconThemeData(color: Colors.white, size: 32),
+      ),
+      body: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: nomeController,
+                    decoration: const InputDecoration(
+                      labelText: "Nome",
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    validator: (value) =>
+                        Validators.validateNotEmpty(value, "nome"),
+                  ),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: dataNascController,
+                    keyboardType: TextInputType.datetime,
+                    inputFormatters: [maskFormatter],
+                    decoration: const InputDecoration(
+                      labelText: "Data de Nascimento",
+                      prefixIcon: Icon(Icons.cake),
+                    ),
+                    validator: (value) => Validators.validateAge(value),
+                  ),
+                  SizedBox(height: 16),
+                  DropdownButtonFormField<int>(
+                    isExpanded: true,
+                    menuMaxHeight: MediaQuery.of(context).size.height * 0.4,
+                    value: qtdIngressosComprados,
+                    items: List.generate(
+                      widget.event.qtdIngressos,
+                      (i) => DropdownMenuItem(
+                        value: i + 1,
+                        child: Text("${i + 1}"),
+                      ),
+                    ),
+                    onChanged: (val) =>
+                        setState(() => qtdIngressosComprados = val!),
+                    decoration: const InputDecoration(
+                      labelText: "Quantidade de Ingressos",
+                      prefixIcon: Icon(Icons.confirmation_number),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        final venda = Sale(
+                          nomeCliente: nomeController.text,
+                          dataNascimento: dataNascController.text,
+                          qtdIngressos: qtdIngressosComprados,
+                          eventId: widget.event.id!,
+                        );
 
-                    await saleDao.postSale(venda, eventDao, historyDao);
+                        await saleDao.postSale(venda, eventDao, historyDao);
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Venda realizada!")),
-                    );
-                    Navigator.pop(context, true);
-                  }
-                },
-                child: const Text("Finalizar Compra"),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Venda realizada!",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                        Navigator.pop(context, true);
+                      }
+                    },
+                    child: const Text(
+                      "Finalizar Compra",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
