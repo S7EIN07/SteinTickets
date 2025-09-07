@@ -26,6 +26,7 @@ class AppDatabase {
       CREATE TABLE Events(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
+        imagePath TEXT,
         qtdMaxima INTEGER NOT NULL,
         qtdIngressos INTEGER NOT NULL
       )
@@ -39,6 +40,15 @@ class AppDatabase {
         qtdIngressos INTEGER NOT NULL,
         eventId INTEGER,
         FOREIGN KEY(eventId) REFERENCES Events(id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE history(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        saleId INTEGER NOT NULL,
+        timestamp TEXT NOT NULL,
+        FOREIGN KEY(saleId) REFERENCES Sales(id)
       )
     ''');
   }

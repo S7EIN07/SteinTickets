@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stein_tickets/core/database/dao/event_dao.dart';
+import 'package:stein_tickets/core/database/dao/history_sale_dao.dart';
 import 'package:stein_tickets/core/database/dao/sale_dao.dart';
 import 'package:stein_tickets/core/models/event_model.dart';
 import 'package:stein_tickets/core/models/sale_model.dart';
@@ -20,7 +21,9 @@ class _BuyPageState extends State<BuyPage> {
   final dataNascController = TextEditingController();
   int qtdIngressosComprados = 1;
 
-  final vendaDao = SaleDao();
+  final saleDao = SaleDao();
+  final eventDao = EventDao();
+  final historyDao = HistoryDao();
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +46,12 @@ class _BuyPageState extends State<BuyPage> {
                 decoration: const InputDecoration(
                   labelText: "Data de Nascimento",
                 ),
-                validator: (value) => Validators.validateDate(value),
+                validator: (value) => Validators.validateAge(value),
               ),
               DropdownButtonFormField<int>(
                 value: qtdIngressosComprados,
                 items: List.generate(
-                  widget.event.qtdMaxima,
+                  widget.event.qtdIngressos,
                   (i) =>
                       DropdownMenuItem(value: i + 1, child: Text("${i + 1}")),
                 ),
@@ -68,15 +71,13 @@ class _BuyPageState extends State<BuyPage> {
                       qtdIngressos: qtdIngressosComprados,
                       eventId: widget.event.id!,
                     );
-                    await vendaDao.insert(venda);
-                    await EventDao().decreaseTicketCount(
-                      widget.event.id!,
-                      qtdIngressosComprados,
-                    );
+
+                    await saleDao.postSale(venda, eventDao, historyDao);
+
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Venda realizada!")),
                     );
-                    Navigator.pop(context);
+                    Navigator.pop(context, true);
                   }
                 },
                 child: const Text("Finalizar Compra"),

@@ -37,4 +37,20 @@ class EventDao {
       [qtdIngressos, id],
     );
   }
+
+  Future<Event?> getById(int saleId) async {
+    final db = await AppDatabase.instance.database;
+    final result = await db.query(
+      tableName,
+      where: 'id = ?',
+      whereArgs: [saleId],
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      return Event.fromMap(result.first);
+    } else {
+      return null;
+    }
+  }
 }

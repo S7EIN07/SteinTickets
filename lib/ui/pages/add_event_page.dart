@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:stein_tickets/core/database/dao/event_dao.dart';
 import 'package:stein_tickets/core/models/event_model.dart';
 import '../../../utils/validators.dart';
@@ -15,23 +18,52 @@ class _AddEventPageState extends State<AddEventPage> {
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController qtdMaxController = TextEditingController();
   final eventoDao = EventDao();
+  File? _selectedImage;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Adicionar Evento")),
+      appBar: AppBar(
+        title: const Text("Adicionar Evento"),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // muda cor
+          size: 28, // muda tamanho
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
+              if (_selectedImage != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(
+                    _selectedImage!,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              SizedBox(height: 20),
               TextFormField(
                 controller: nomeController,
                 decoration: const InputDecoration(labelText: "Nome do Evento"),
                 validator: (value) =>
                     Validators.validateNotEmpty(value, "nome"),
               ),
+              SizedBox(height: 20),
               TextFormField(
                 controller: qtdMaxController,
                 decoration: const InputDecoration(
@@ -42,6 +74,15 @@ class _AddEventPageState extends State<AddEventPage> {
                     Validators.validateInt(value, "quantidade"),
               ),
               const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: _pickImage,
+                icon: const Icon(Icons.image, color: Colors.white),
+                label: const Text(
+                  "Selecionar Imagem",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
@@ -49,6 +90,7 @@ class _AddEventPageState extends State<AddEventPage> {
                       nome: nomeController.text,
                       qtdMaxima: int.parse(qtdMaxController.text),
                       qtdIngressos: int.parse(qtdMaxController.text),
+                      imagePath: _selectedImage?.path,
                     );
                     await eventoDao.insert(evento);
                     Navigator.pop(
@@ -57,7 +99,10 @@ class _AddEventPageState extends State<AddEventPage> {
                     ); // Retorna sinal de atualização
                   }
                 },
-                child: const Text("Salvar Evento"),
+                child: const Text(
+                  "Salvar Evento",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

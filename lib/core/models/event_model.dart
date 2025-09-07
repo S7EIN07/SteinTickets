@@ -1,24 +1,33 @@
 class Event {
   final int? id;
   final String nome;
+  final String? imagePath;
   final int qtdMaxima;
-  final int? qtdIngressos;
+  final int qtdIngressos;
 
   Event({
     this.id,
     required this.nome,
+    this.imagePath,
     required this.qtdMaxima,
-    this.qtdIngressos,
+    required this.qtdIngressos,
   });
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'nome': nome, 'qtdMaxima': qtdMaxima};
+    return {
+      'id': id,
+      'nome': nome,
+      'imagePath': imagePath,
+      'qtdMaxima': qtdMaxima,
+      "qtdIngressos": qtdIngressos,
+    };
   }
 
   factory Event.fromMap(Map<String, dynamic> map) {
     return Event(
       id: map['id'],
       nome: map['nome'],
+      imagePath: map['imagePath'],
       qtdMaxima: map['qtdMaxima'],
       qtdIngressos: map['qtdIngressos'] ?? map['qtdMaxima'],
     );
