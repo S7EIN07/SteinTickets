@@ -28,6 +28,13 @@ class _HomePageState extends State<HomePage> {
     setState(() => eventos = data);
   }
 
+  Future<void> _deleteEvent(Event event) async {
+    await eventoDao.delete(event.id!);
+    setState(() {
+      eventos.remove(event);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +73,12 @@ class _HomePageState extends State<HomePage> {
                     );
                     if (shouldRefresh == true) _loadEvents();
                   },
-                  child: EventCard(event: evento),
+                  child: EventCard(
+                    onDelete: () {
+                      _deleteEvent(evento);
+                    },
+                    event: evento,
+                  ),
                 );
               },
             ),

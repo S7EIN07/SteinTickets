@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'ui/pages/home_page.dart';
+import 'ui/pages/splash_page.dart';
 
 void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: SplashScreen(),
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
         scaffoldBackgroundColor: Colors.grey[100],
