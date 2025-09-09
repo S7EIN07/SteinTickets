@@ -63,6 +63,7 @@ class _BuyPageState extends State<BuyPage> {
                     controller: dataNascController,
                     decoration: const InputDecoration(
                       labelText: "Data de Nascimento",
+                      prefixIcon: Icon(Icons.calendar_month),
                     ),
                     keyboardType: TextInputType.datetime,
                     validator: (value) {
