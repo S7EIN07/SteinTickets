@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -28,10 +29,11 @@ class AppDatabase {
         nome TEXT NOT NULL,
         imagePath TEXT,
         qtdMaxima INTEGER NOT NULL,
-        qtdIngressos INTEGER NOT NULL
+        qtdIngressos INTEGER NOT NULL,
+        minimumAge INTEGER
       )
     ''');
-
+    debugPrint("TABELA DE EVENTOS");
     await db.execute('''
       CREATE TABLE Sales(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,7 +44,7 @@ class AppDatabase {
         FOREIGN KEY(eventId) REFERENCES Events(id)
       )
     ''');
-
+    debugPrint("TABELA DE SALES");
     await db.execute('''
       CREATE TABLE history(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,5 +53,6 @@ class AppDatabase {
         FOREIGN KEY(saleId) REFERENCES Sales(id)
       )
     ''');
+    debugPrint("TABELA DE HISTORY");
   }
 }

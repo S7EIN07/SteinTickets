@@ -20,6 +20,7 @@ class _BuyPageState extends State<BuyPage> {
   final _formKey = GlobalKey<FormState>();
   final nomeController = TextEditingController();
   final dataNascController = TextEditingController();
+
   int qtdIngressosComprados = 1;
 
   final saleDao = SaleDao();
@@ -58,14 +59,16 @@ class _BuyPageState extends State<BuyPage> {
                   ),
                   SizedBox(height: 16),
                   TextFormField(
-                    controller: dataNascController,
-                    keyboardType: TextInputType.datetime,
                     inputFormatters: [maskFormatter],
+                    controller: dataNascController,
                     decoration: const InputDecoration(
                       labelText: "Data de Nascimento",
-                      prefixIcon: Icon(Icons.cake),
                     ),
-                    validator: (value) => Validators.validateAge(value),
+                    keyboardType: TextInputType.datetime,
+                    validator: (value) {
+                      final minAge = widget.event.minimumAge;
+                      return Validators.validateAge(value, minAge: minAge);
+                    },
                   ),
                   SizedBox(height: 16),
                   DropdownButtonFormField<int>(

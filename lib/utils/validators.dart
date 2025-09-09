@@ -1,4 +1,6 @@
 class Validators {
+  static const defaultMinAge = 16;
+
   static String? validateNotEmpty(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return "Digite $fieldName";
@@ -16,7 +18,9 @@ class Validators {
     return null;
   }
 
-  static String? validateAge(String? value) {
+  static String? validateAge(String? value, {int? minAge}) {
+    final effectiveMinAge = minAge ?? defaultMinAge;
+
     if (value == null || value.trim().isEmpty) {
       return "Digite a data de nascimento";
     }
@@ -39,10 +43,14 @@ class Validators {
       final birthDate = DateTime(year, month, day);
       final now = DateTime.now();
 
-      final minAgeDate = DateTime(now.year - 16, now.month, now.day);
+      final minAgeDate = DateTime(
+        now.year - effectiveMinAge,
+        now.month,
+        now.day,
+      );
 
       if (birthDate.isAfter(minAgeDate)) {
-        return "A idade mínima é de 16 anos.";
+        return "A idade mínima é de $effectiveMinAge anos.";
       }
     } catch (e) {
       return "Data inválida.";

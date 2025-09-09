@@ -4,6 +4,7 @@ class Event {
   final String? imagePath;
   final int qtdMaxima;
   final int qtdIngressos;
+  final int? minimumAge;
 
   Event({
     this.id,
@@ -11,6 +12,7 @@ class Event {
     this.imagePath,
     required this.qtdMaxima,
     required this.qtdIngressos,
+    this.minimumAge = 16,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +22,7 @@ class Event {
       'imagePath': imagePath,
       'qtdMaxima': qtdMaxima,
       "qtdIngressos": qtdIngressos,
+      "minimumAge": minimumAge,
     };
   }
 
@@ -30,6 +33,7 @@ class Event {
       imagePath: map['imagePath'],
       qtdMaxima: map['qtdMaxima'],
       qtdIngressos: map['qtdIngressos'] ?? map['qtdMaxima'],
+      minimumAge: map['minimumAge'],
     );
   }
 }

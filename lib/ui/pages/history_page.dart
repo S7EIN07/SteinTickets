@@ -99,8 +99,8 @@ class _HistoryPageState extends State<HistoryPage> {
                       padding: const EdgeInsets.only(top: 6),
                       child: Text(
                         "Cliente: ${sale.nomeCliente}\n"
-                        "Ingressos: ${sale.qtdIngressos}\n"
-                        "Data: ${sale.dataNascimento}",
+                        "Ingressos Comprados: ${sale.qtdIngressos}\n"
+                        "Data de Nascimento: ${sale.dataNascimento}",
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.black87,
